@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { Text, StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native';
+import { useCallback, useEffect } from 'react';
+import { Text, StyleSheet, View, TouchableOpacity, ScrollView, RefreshControl } from 'react-native';
 import * as Location from 'expo-location';
 import { useRouter } from 'expo-router';
 import { RootState, useAppDispatch, useAppSelector } from '@/store/store';
@@ -40,25 +40,25 @@ export default function HomeScreen() {
   const weatherState = useAppSelector((state: RootState) => state.weather);
   const currentPlaceState = useAppSelector((state: RootState) => state.currentPlace);
 
-  useEffect(() => {
-    const fetchWeather = async () => {
-      if (currentPlaceState.place) {
-        dispatch(
-          getWeatherByCoordinates({
-            latitude: currentPlaceState.place.lat,
-            longitude: currentPlaceState.place.long,
-          }),
-        );
-      } else {
-        const location = await getLocation();
-        if (location) {
-          dispatch(getWeatherByCoordinates(location));
-        }
+  const fetchWeather = useCallback(async () => {
+    if (currentPlaceState.place) {
+      dispatch(
+        getWeatherByCoordinates({
+          latitude: currentPlaceState.place.lat,
+          longitude: currentPlaceState.place.long,
+        }),
+      );
+    } else {
+      const location = await getLocation();
+      if (location) {
+        dispatch(getWeatherByCoordinates(location));
       }
-    };
-
-    fetchWeather().then(() => console.log('Get current weather'));
+    }
   }, [currentPlaceState.place, dispatch]);
+
+  useEffect(() => {
+    fetchWeather().then(() => console.log('Get weather'));
+  }, [currentPlaceState.place, dispatch, fetchWeather]);
 
   if (weatherState.loading) return <Loading />;
 
@@ -67,7 +67,11 @@ export default function HomeScreen() {
       <SafeAreaView style={styles.safeArea}>
         {weatherState.error && <ErrorView errorMessage={weatherState.error} />}
         {!weatherState.error && (
-          <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <ScrollView
+            contentContainerStyle={styles.scrollContainer}
+            refreshControl={
+              <RefreshControl refreshing={weatherState.loading} onRefresh={fetchWeather} />
+            }>
             <WeatherView place={currentPlaceState.place} weather={weatherState.weather} />
           </ScrollView>
         )}
