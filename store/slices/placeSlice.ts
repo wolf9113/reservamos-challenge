@@ -30,7 +30,11 @@ const initialState: PlacesState = {
 const placesSlice = createSlice({
   name: 'places',
   initialState,
-  reducers: {},
+  reducers: {
+    clearPlaces: (state) => {
+      state.places = [];
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getPlaceByQuery.pending, (state) => {
@@ -47,5 +51,7 @@ const placesSlice = createSlice({
       });
   },
 });
+
+export const { clearPlaces } = placesSlice.actions;
 
 export default placesSlice.reducer;

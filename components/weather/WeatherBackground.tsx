@@ -1,13 +1,13 @@
 import React from 'react';
 import { ImageBackground, View, StyleSheet } from 'react-native';
-import { CurrentWeather } from '@/models/Weather';
+import { CurrentWeather, DailyWeather } from '@/models/Weather';
 
 /**
  * Determines if it's currently night based on OpenWeatherMap timestamps
  * @param {CurrentWeather} current - The current weather data from OpenWeatherMap
  * @returns {boolean}
  */
-const isNightTime = (current: CurrentWeather): boolean => {
+const isNightTime = (current: CurrentWeather | DailyWeather): boolean => {
   return current.dt < current.sunrise || current.dt > current.sunset;
 };
 
@@ -63,7 +63,7 @@ export default function WeatherBackground({
   currentWeather,
   children,
 }: {
-  currentWeather?: CurrentWeather;
+  currentWeather?: CurrentWeather | DailyWeather;
   children: React.ReactNode;
 }): JSX.Element {
   let isNight = false;

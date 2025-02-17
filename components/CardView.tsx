@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import { BlurView } from 'expo-blur';
+import { useColorScheme } from '@/hooks/useColorScheme';
 
 /**
  * Renders a card view
@@ -15,10 +16,12 @@ export default function CardView({
   title: string;
   children: React.ReactNode;
 }) {
+  const tintColor = useColorScheme() ?? 'light';
   return (
     <BlurView
       intensity={60}
       style={styles.blurContainer}
+      tint={tintColor}
       experimentalBlurMethod={'dimezisBlurView'}>
       <Text style={styles.label}>{title ?? ''}</Text>
       <View style={styles.content}>{children}</View>

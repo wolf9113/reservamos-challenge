@@ -2,6 +2,7 @@ import { Place } from '@/models/Place';
 import { Weather } from '@/models/Weather';
 import { StyleSheet, Text, View } from 'react-native';
 import i18n from '@/utils/i18n/i18n';
+import { formatTemperature } from '@/utils/formatTemperature';
 
 const PlaceWeatherSummaryView = ({ place, weather }: { place?: Place; weather: Weather }) => {
   let max = 0;
@@ -19,12 +20,12 @@ const PlaceWeatherSummaryView = ({ place, weather }: { place?: Place; weather: W
       <Text style={styles.label}>{i18n.t('location')}</Text>
       <Text style={styles.city}>{place?.display ?? i18n.t('yourLocation')}</Text>
       {!place && <Text style={styles.coords}>{`${weather.lat} ${weather.lon}`}</Text>}
-      <Text style={styles.temp}>{Math.round(weather.current.temp)}°C</Text>
-      <Text style={styles.label}>{`${i18n.t('feelsLike')} ${Math.round(feelsLike)}°C`}</Text>
+      <Text style={styles.temp}>{formatTemperature(weather.current.temp)}</Text>
+      <Text style={styles.label}>{`${i18n.t('feelsLike')} ${formatTemperature(feelsLike)}`}</Text>
       <Text
         style={
           styles.description
-        }>{`${i18n.t('max')}: ${Math.round(max)}°  ${i18n.t('min')}:${Math.round(min)}°`}</Text>
+        }>{`${i18n.t('max')}: ${formatTemperature(max)}  ${i18n.t('min')}:${formatTemperature(min)}`}</Text>
     </View>
   );
 };

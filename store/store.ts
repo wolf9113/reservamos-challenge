@@ -4,12 +4,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import weatherSlice from '@/store/slices/weatherSlice';
 import placeSlice from '@/store/slices/placeSlice';
 import currentPlaceSlice from '@/store/slices/currentPlaceSlice';
+import currentDailyWeatherSlice from '@/store/slices/currentDailyWeatherSlice';
 
 export const store = configureStore({
   reducer: {
     weather: weatherSlice,
     places: placeSlice,
     currentPlace: currentPlaceSlice,
+    currentDailyWeather: currentDailyWeatherSlice,
   },
 });
 

@@ -1,12 +1,11 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { View, FlatList, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedInput } from '@/components/ThemedInput';
 import { ThemedView } from '@/components/ThemedView';
 import { Place } from '@/models/Place';
 import { RootState, useAppDispatch, useAppSelector } from '@/store/store';
-import { getPlaceByQuery } from '@/store/slices/placeSlice';
+import { clearPlaces, getPlaceByQuery } from '@/store/slices/placeSlice';
 import { setCurrentPlace } from '@/store/slices/currentPlaceSlice';
 import { useRouter } from 'expo-router';
 import i18n from '@/utils/i18n/i18n';
@@ -42,23 +41,25 @@ export default function SearchScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedInput
-          ref={inputRef}
-          placeholder={i18n.t('searchLocation')}
-          value={query}
-          onChangeText={setQuery}
-          onSubmitEditing={searchPlaces}
-        />
-        <SpacingBox height={20} />
-        <FlatList
-          data={placesState.places}
-          keyExtractor={(item: Place, index) => `${item.slug}_${index.toString()}`}
-          showsVerticalScrollIndicator={false}
-          ItemSeparatorComponent={itemSeparator}
-          renderItem={({ item: place }) => <PlaceItem place={place} />}
-        />
-      </SafeAreaView>
+      <ThemedInput
+        ref={inputRef}
+        placeholder={i18n.t('searchLocation')}
+        value={query}
+        onChangeText={setQuery}
+        onSubmitEditing={searchPlaces}
+        onClearText={() => {
+          dispatch(clearPlaces());
+        }}
+        leadingIconName={'search'}
+      />
+      <SpacingBox height={20} />
+      <FlatList
+        data={placesState.places}
+        keyExtractor={(item: Place, index) => `${item.slug}_${index.toString()}`}
+        showsVerticalScrollIndicator={false}
+        ItemSeparatorComponent={itemSeparator}
+        renderItem={({ item: place }) => <PlaceItem place={place} />}
+      />
     </ThemedView>
   );
 }
@@ -87,14 +88,11 @@ const PlaceItem = ({ place }: { place: Place }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 20,
   },
   title: {
     fontWeight: 'bold',
     fontSize: 18,
-  },
-  safeArea: {
-    flex: 1,
-    padding: 20,
   },
   cityItem: {
     padding: 20,

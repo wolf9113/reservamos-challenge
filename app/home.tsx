@@ -60,7 +60,12 @@ export default function HomeScreen() {
     fetchWeather().then(() => console.log('Get weather'));
   }, [currentPlaceState.place, dispatch, fetchWeather]);
 
-  if (weatherState.loading) return <Loading />;
+  if (weatherState.loading)
+    return (
+      <WeatherBackground>
+        <Loading />
+      </WeatherBackground>
+    );
 
   return (
     <WeatherBackground currentWeather={weatherState.weather?.current}>
@@ -112,7 +117,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     width: '100%',
-    height: 120,
+    height: 110,
   },
   loading: {
     flex: 1,
@@ -133,7 +138,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   button: {
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    backgroundColor: 'darkgray',
     padding: 20,
     borderRadius: 20,
     alignItems: 'center',

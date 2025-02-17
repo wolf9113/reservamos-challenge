@@ -7,10 +7,15 @@ import { Ionicons } from '@expo/vector-icons';
 export type ThemedInputProps = TextInputProps & {
   lightColor?: string;
   darkColor?: string;
+  onClearText?: () => void;
+  leadingIconName?: any;
 };
 
 export const ThemedInput = forwardRef<TextInput, ThemedInputProps>(
-  ({ style, lightColor, darkColor, onChangeText, value, ...rest }, ref) => {
+  (
+    { style, lightColor, darkColor, onChangeText, onClearText, leadingIconName, value, ...rest },
+    ref,
+  ) => {
     const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
     const inputBackground = useThemeColor(
       { light: lightColor, dark: darkColor },
@@ -24,6 +29,9 @@ export const ThemedInput = forwardRef<TextInput, ThemedInputProps>(
       setInputValue('');
       if (onChangeText) {
         onChangeText('');
+        if (onClearText) {
+          onClearText();
+        }
       }
     };
 
@@ -34,6 +42,11 @@ export const ThemedInput = forwardRef<TextInput, ThemedInputProps>(
             styles.inputContainer,
             { backgroundColor: inputBackground, borderColor: borderColor },
           ]}>
+          {leadingIconName && (
+            <View style={styles.iconContainer}>
+              <Ionicons name={leadingIconName} size={20} color="gray" />
+            </View>
+          )}
           <TextInput
             ref={ref}
             style={[{ color }, styles.input, style]}
@@ -48,7 +61,7 @@ export const ThemedInput = forwardRef<TextInput, ThemedInputProps>(
             {...rest}
           />
           {inputValue.length > 0 && (
-            <TouchableOpacity style={styles.clearButton} onPress={handleClear}>
+            <TouchableOpacity style={styles.iconContainer} onPress={handleClear}>
               <Ionicons name="close-circle" size={20} color="gray" />
             </TouchableOpacity>
           )}
@@ -76,8 +89,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     paddingVertical: 12,
   },
-  clearButton: {
-    marginLeft: 8,
+  iconContainer: {
+    marginHorizontal: 5,
   },
 });
 

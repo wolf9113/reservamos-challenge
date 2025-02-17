@@ -15,7 +15,7 @@ const getWeatherByCoordinates = async (latitude: number, longitude: number): Pro
       params: {
         lat: latitude,
         lon: longitude,
-        exclude: 'minutely,alerts', // hourly,current,daily,
+        exclude: 'minutely', // hourly,current,daily,alerts
         appid: API_KEY,
         units: 'metric',
       },

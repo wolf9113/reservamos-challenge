@@ -4,6 +4,8 @@ import { Weather } from '@/models/Weather';
 import PlaceWeatherSummaryView from '@/components/place/PlaceWeatherSummaryView';
 import HourlyWeatherView from '@/components/weather/HourlyWeatherView';
 import DailyWeatherView from '@/components/weather/DailyWeatherView';
+import AlertWeatherView from '@/components/weather/AlertWeatherView';
+import WindWeatherView from '@/components/weather/WindWeatherView';
 
 export default function WeatherView({ weather, place }: { weather?: Weather; place?: Place }) {
   if (!weather) {
@@ -13,8 +15,14 @@ export default function WeatherView({ weather, place }: { weather?: Weather; pla
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <PlaceWeatherSummaryView place={place} weather={weather} />
+      <AlertWeatherView weather={weather} />
       <HourlyWeatherView weather={weather} />
       <DailyWeatherView weather={weather} />
+      <WindWeatherView
+        windSpeed={weather.current?.wind_speed ?? 0}
+        windGust={weather.current?.wind_gust ?? 0}
+        windDeg={weather.current?.wind_deg ?? 0}
+      />
     </ScrollView>
   );
 }

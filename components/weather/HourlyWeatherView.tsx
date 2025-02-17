@@ -4,6 +4,7 @@ import { DateTime } from 'luxon';
 import CardView from '../CardView';
 import WeatherIcon from '@/components/weather/WeatherIcon';
 import i18n from '@/utils/i18n/i18n';
+import { formatTemperature } from '@/utils/formatTemperature';
 
 const HourlyWeatherView = ({ weather }: { weather: Weather }) => {
   const itemSeparator = () => {
@@ -29,9 +30,14 @@ const HourlyWeatherView = ({ weather }: { weather: Weather }) => {
 const HourlyItem = (hourlyWeather: HourlyWeather) => {
   return (
     <View style={styles.itemContainer}>
-      <Text style={styles.label}>{DateTime.fromSeconds(hourlyWeather.dt).toFormat('hh a')}</Text>
+      <Text style={styles.label}>
+        {DateTime.fromSeconds(hourlyWeather.dt).toLocaleString({
+          hour: '2-digit',
+          minute: '2-digit',
+        })}
+      </Text>
       <WeatherIcon iconCode={hourlyWeather.weather[0].icon} />
-      <Text style={styles.temp}>{Math.round(hourlyWeather.temp)}°C</Text>
+      <Text style={styles.temp}>{formatTemperature(hourlyWeather.temp)}</Text>
     </View>
   );
 };
@@ -43,10 +49,11 @@ const styles = StyleSheet.create({
     flex: 0,
   },
   itemContainer: {
-    height: 100,
-    width: 50,
+    height: 120,
+    width: 80,
     flexDirection: 'column',
     justifyContent: 'center',
+    alignItems: 'center',
     flex: 0,
   },
   label: {

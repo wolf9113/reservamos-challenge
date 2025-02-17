@@ -1,9 +1,14 @@
 import { DailyWeather, Weather } from '@/models/Weather';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { DateTime } from 'luxon';
 import CardView from '../CardView';
 import WeatherIcon from '@/components/weather/WeatherIcon';
 import i18n from '@/utils/i18n/i18n';
+import { Routes } from '@/constants/Routes';
+import { useRouter } from 'expo-router';
+import { useAppDispatch } from '@/store/store';
+import { setCurrentDailyWeather } from '@/store/slices/currentDailyWeatherSlice';
+import { formatTemperature } from '@/utils/formatTemperature';
 
 const DailyWeatherView = ({ weather }: { weather: Weather }) => {
   return (
@@ -18,11 +23,18 @@ const DailyWeatherView = ({ weather }: { weather: Weather }) => {
 };
 
 const DailyItem = ({ dailyWeather }: { dailyWeather: DailyWeather }) => {
+  const dispatch = useAppDispatch();
+  const router = useRouter();
   const date = DateTime.fromSeconds(dailyWeather.dt);
   const isToday = DateTime.now().hasSame(date, 'day');
 
   return (
-    <View style={styles.itemContainer}>
+    <TouchableOpacity
+      style={styles.itemContainer}
+      onPress={() => {
+        dispatch(setCurrentDailyWeather(dailyWeather));
+        router.push(`/${Routes.WEATHER_DETAILS}`);
+      }}>
       <View
         style={{
           flexDirection: 'row',
@@ -32,14 +44,16 @@ const DailyItem = ({ dailyWeather }: { dailyWeather: DailyWeather }) => {
           width: 200,
         }}>
         <Text style={styles.day}>
-          {isToday ? i18n.t('today') : date.toLocaleString({ weekday: 'long' })}
+          {isToday
+            ? i18n.t('today').toUpperCase()
+            : date.toLocaleString({ weekday: 'long' }).toLocaleUpperCase()}
         </Text>
         <WeatherIcon iconCode={dailyWeather.weather[0].icon} />
       </View>
       <Text style={styles.temp}>
-        {Math.round(dailyWeather.temp.min)}°C - {Math.round(dailyWeather.temp.max)}°C
+        {formatTemperature(dailyWeather.temp.min)} - {formatTemperature(dailyWeather.temp.max)}
       </Text>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -72,8 +86,9 @@ const styles = StyleSheet.create({
   },
   day: {
     fontWeight: 'bold',
-    fontSize: 18,
+    fontSize: 16,
     color: 'white',
+    textTransform: 'capitalize',
   },
 });
 

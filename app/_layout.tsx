@@ -11,9 +11,10 @@ import { Routes } from '@/constants/Routes';
 import { Provider } from 'react-redux';
 import { store } from '@/store/store';
 import '@/utils/setupLuxon';
+import i18n from '@/utils/i18n/i18n';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
+SplashScreen.preventAutoHideAsync().then();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -23,7 +24,7 @@ export default function RootLayout() {
 
   useEffect(() => {
     if (loaded) {
-      SplashScreen.hideAsync();
+      SplashScreen.hideAsync().then();
     }
   }, [loaded]);
 
@@ -36,7 +37,26 @@ export default function RootLayout() {
       <Provider store={store}>
         <Stack>
           <Stack.Screen name={Routes.HOME} options={{ headerShown: false }} />
-          <Stack.Screen name={Routes.SEARCH} options={{ title: 'Search', headerShown: false }} />
+          <Stack.Screen
+            name={Routes.SEARCH}
+            options={{
+              title: i18n.t('location').toUpperCase(),
+              headerTintColor: 'gray',
+              headerBackButtonDisplayMode: 'minimal',
+            }}
+          />
+          <Stack.Screen
+            name={Routes.WEATHER_DETAILS}
+            options={{
+              headerTintColor: 'white',
+              headerBackButtonDisplayMode: 'minimal',
+              headerTransparent: true,
+              headerStyle: {
+                backgroundColor: 'transparent',
+              },
+              headerBlurEffect: 'light',
+            }}
+          />
           <Stack.Screen name={Routes.NOT_FOUND} />
         </Stack>
         <StatusBar style="auto" />
